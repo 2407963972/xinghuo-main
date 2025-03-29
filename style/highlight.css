@@ -1,31 +1,52 @@
 pre {
   margin: 20px 0;
   display: block;
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 20px;
-  background-color: #343541;
-  color: white;
-  font-family: monospace;
+  background-color: #1e1e2e;
+  color: #f8f8f2;
+  font-family: "Fira Code", "Consolas", monospace;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-size: 15px;
+  line-height: 1.6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #313244;
+}
+
+pre span {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+pre hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 8px 0 12px;
 }
 
 .keyword {
-  color: #569cd6; /* 关键字颜色 */
+  color: #ff79c6; /* 关键字颜色 */
+  font-weight: bold;
 }
 
 .string {
-  color: #ce9178; /* 字符串颜色 */
+  color: #f1fa8c; /* 字符串颜色 */
 }
 
 .comment {
-  color: #6a9955; /* 注释颜色 */
+  color: #6272a4; /* 注释颜色 */
+  font-style: italic;
 }
 
 .function {
-  color: #dcdcaa; /* 函数名颜色 */
+  color: #50fa7b; /* 函数名颜色 */
 }
 
 .number {
-  color: #b5cea8; /* 数字颜色 */
-}
+  color: #bd93f9; /* 数字颜色 */
+} 
