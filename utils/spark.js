@@ -7,23 +7,47 @@ const signatureToHmacSHA256ToBase64 = (origin, secret) => {
 }
 // 鉴权url地址
 const getWebsocketUrl = () => {
-  const hostUrl = import.meta.env.VITE_APP_SPARK_URL;
-  const host = new URL(hostUrl).host;
-  const pathname = new URL(hostUrl).pathname;
-  const apiKey = import.meta.env.VITE_APP_SPARK_APIKEY;
-  const apiSecret = import.meta.env.VITE_APP_SPARK_APISECRET;
-  let apiKeyName = "api_key";
-  let date = new Date().toGMTString();
-  let algorithm = "hmac-sha256"
-  let headers = "host date request-line";
-  // let signatureOrigin = `host: ${host}\ndate: ${date}\nGET /v1.1/chat HTTP/1.1`;
-  let signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${pathname} HTTP/1.1`;
-  let signature = signatureToHmacSHA256ToBase64(signatureOrigin, apiSecret)
-  let authorizationOrigin = `${apiKeyName}="${apiKey}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`;
-  let authorization = btoa(authorizationOrigin)
-  // 将空格编码
-  let url = `${hostUrl}?authorization=${authorization}&date=${encodeURI(date)}&host=${host}`;
-  return url
+  try {
+    const hostUrl = import.meta.env.VITE_APP_SPARK_URL || 'wss://spark-api.xf-yun.com/v3.5/chat';
+    // 将 wss:// 转换为 https:// 以便 URL 正确解析
+    const httpsUrl = hostUrl.replace(/^wss:\/\//i, 'https://');
+    
+    let host, pathname;
+    try {
+      const urlObj = new URL(httpsUrl);
+      host = urlObj.host;
+      pathname = urlObj.pathname;
+    } catch (e) {
+      console.error('URL解析错误，使用备用解析方法', e);
+      // 备用解析方法
+      const urlParts = httpsUrl.split('://');
+      if (urlParts.length > 1) {
+        const rest = urlParts[1].split('/');
+        host = rest[0];
+        pathname = '/' + rest.slice(1).join('/');
+      } else {
+        host = 'spark-api.xf-yun.com';
+        pathname = '/v3.5/chat';
+      }
+    }
+    
+    const apiKey = import.meta.env.VITE_APP_SPARK_APIKEY;
+    const apiSecret = import.meta.env.VITE_APP_SPARK_APISECRET;
+    let apiKeyName = "api_key";
+    let date = new Date().toGMTString();
+    let algorithm = "hmac-sha256"
+    let headers = "host date request-line";
+    let signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${pathname} HTTP/1.1`;
+    let signature = signatureToHmacSHA256ToBase64(signatureOrigin, apiSecret)
+    let authorizationOrigin = `${apiKeyName}="${apiKey}", algorithm="${algorithm}", headers="${headers}", signature="${signature}"`;
+    let authorization = btoa(authorizationOrigin)
+    // 将空格编码
+    let url = `${hostUrl}?authorization=${authorization}&date=${encodeURI(date)}&host=${host}`;
+    return url;
+  } catch (error) {
+    console.error('获取WebSocket URL失败:', error);
+    throw error;
+  }
 }
 /**
  *  获取参数
@@ -73,7 +97,7 @@ export const getWSConnect = async () => {
       resolve(event)
     });
     ws.addEventListener('error', (error) => {
-      console.log('连接发送错误！！', event);
+      console.log('连接发送错误！！', error);
       reject(error)
     });
   });
