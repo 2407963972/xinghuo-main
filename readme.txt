@@ -30,10 +30,10 @@
 1. 下载此项目并且解压，拖入vscode
 
 2. 安装依赖
+
 在代码根目录下的终端输入npm install
 
-
-3. 配置环境变量
+3. 配置
 编辑 .env 文件，填入您的 API 凭证（代码内的各id是我本人的）
 # VITE_APP_SPARK_APPID='您的APPID'
 # VITE_APP_SPARK_APISECRET='您的APISECRET'
@@ -45,7 +45,6 @@
 在代码根目录下的终端输入：npm run dev
 
 服务拉起后，访问拉起的网址即可开始与 AI 对话。
-
 
 ## 使用指南
 
